@@ -1,0 +1,98 @@
+#include <iostream>
+
+using namespace std;
+
+class Product {
+public:
+    int productId;
+    string productName;
+    double price;
+
+    Product(int id, const string& name, double p) : productId(id), productName(name), price(p) {}
+
+    void displayProductDetails() const {
+        cout << "Product ID: " << productId << "\tName: " << productName << "\tPrice: $" << price << endl;
+    }
+};
+
+class ShoppingCart {
+private:
+    static const int MAX_PRODUCTS = 10;  // Maximum number of products in the cart
+    Product* products[MAX_PRODUCTS];
+    int itemCount;
+
+public:
+    ShoppingCart() : itemCount(0) {}
+
+    void addProduct(Product* product) {
+        if (itemCount < MAX_PRODUCTS) {
+            products[itemCount++] = product;
+        } else {
+            cout << "Shopping cart is full. Cannot add more products." << endl;
+        }
+    }
+
+    void displayAllProducts() const {
+        cout << "Products in the Shopping Cart:" << endl;
+        for (int i = 0; i < itemCount; ++i) {
+            products[i]->displayProductDetails();
+        }
+    }
+
+    double calculateTotalCost() const {
+        double total = 0.0;
+        for (int i = 0; i < itemCount; ++i) {
+            total += products[i]->price;
+        }
+        return total;
+    }
+};
+
+class User {
+public:
+    int userId;
+    ShoppingCart* shoppingCart;
+
+    User(int id) : userId(id), shoppingCart(nullptr) {}
+
+    void displayUserDetails() const {
+        cout << "User ID: " << userId << endl;
+        if (shoppingCart != nullptr) {
+            cout << "User has a shopping cart." << endl;
+        } else {
+            cout << "User does not have a shopping cart." << endl;
+        }
+    }
+};
+
+int main() {
+    // Create products
+    Product* laptop = new Product(1, "Laptop", 999.99);
+    Product* phone = new Product(2, "Smartphone", 499.99);
+
+    // Create a shopping cart and add products
+    ShoppingCart* cart = new ShoppingCart();
+    cart->addProduct(laptop);
+    cart->addProduct(phone);
+
+    // Create a user and associate the shopping cart
+    User* user = new User(1001);
+    user->shoppingCart = cart;
+
+    // Display user details
+    user->displayUserDetails();
+
+    // Display products in the shopping cart
+    cart->displayAllProducts();
+
+    // Calculate and display the total cost
+    cout << "Total Cost: $" << cart->calculateTotalCost() << endl;
+
+    // Clean up memory (assuming you are not using smart pointers for simplicity)
+    delete laptop;
+    delete phone;
+    delete cart;
+    delete user;
+
+    return 0;
+}
